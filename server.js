@@ -1,70 +1,25 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const fs = require('fs');
+const userRoutes = require('./routes/routes'); 
 const path = require('path');
+
+// Initialize MongoDB connection
+const InitiateMongoServer = require('./db');
+InitiateMongoServer();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-
-
-// Define Mongoose schema and model
-const userSchema = new mongoose.Schema({
-  userId: Number,
-  userData: {
-    name: String,
-    age: Number,
-    location: String,
-    email: String
-  }
-});
-
-const User = mongoose.model('User', userSchema);
-
-// Load users.json and insert into MongoDb
-const loadUsers = async () => {
-  const usersFilePath = path.join(__dirname, 'users.json');
-  const usersData = JSON.parse(fs.readFileSync(usersFilePath, 'utf-8'));
-
-  const existingUsers = await User.find({});
-  if (existingUsers.length === 0) {
-    await User.insertMany(usersData);
-    console.log('Users loaded into MongoDB');
-  } else {
-    console.log('Users already exist in the database');
-  }
-};
-
-// Call function to load users on server startup
-loadUsers();
-
-// Middleware to parse JSON
+// Middleware
 app.use(express.json());
 
 // Routes
+app.use('/users', userRoutes); 
 
-// GET /users: Retrieve all user profiles
-app.get('/users', async (req, res) => {
-  try {
-    const users = await User.find({});
-    res.json(users);
-  } catch (err) {
-    res.status(500).json({ error: 'Failed to retrieve users' });
-  }
+app.get('/', (req,res)=>{
+    res.sendFile(path.join(__dirname,'index.html'));
 });
-
-
-// GET /users/:id: Retrieve a specific user by their ID
-app.get('/users/:id', async (req, res) => {
-    try {
-      const user = await User.findOne({ userId: req.params.id });
-      if (!user) {
-        return res.status(404).json({ error: 'User not found' });
-      }
-      res.json(user);
-    } catch (err) {
-      res.status(500).json({ error: 'Failed to retrieve user' });
-    }
-  });
   
-  
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});

@@ -1,4 +1,17 @@
 // MongoDB connection
-mongoose.connect('mongodb://localhost:27017/usersDB', { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Connected to db'))
-  .catch((err) => console.log(err));
+const mongoose = require("mongoose");
+const fs = require('fs');
+
+const InitiateMongoServer = async()=>{
+    try{
+        await mongoose.connect("mongodb+srv://deep8614:deep86@cluster0.xp9et.mongodb.net/");
+    
+    console.log("connected to DB");
+    
+    }catch(e){
+        console.log(e);
+        throw(e);
+        }
+    };
+
+module.exports= InitiateMongoServer;
