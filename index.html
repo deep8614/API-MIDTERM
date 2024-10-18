@@ -53,6 +53,26 @@
       fetchData('/users');
     });
 
+    // Fetch user by ID
+    document.getElementById('getUserById').addEventListener('click', () => {
+      const userId = prompt('Enter the User ID:'); // Prompt user for input
+      if (userId) {
+        fetchData(`/users/${userId}`);
+      } else {
+        resultsElement.textContent = 'User ID is required.';
+      }
+    });
+
+    // Fetch users by location
+    document.getElementById('getUsersByLocation').addEventListener('click', () => {
+      const location = prompt('Enter the location:'); // Prompt user for input
+      if (location) {
+        fetchData(`/users/location/${encodeURIComponent(location)}`); // Encode location for URL
+      } else {
+        resultsElement.textContent = 'Location is required.';
+      }
+    });
+
   </script>
 
 </body>

@@ -28,3 +28,33 @@ exports.getUsers =  async (req, res) => {
       res.status(500).json({ error: 'Failed to retrieve users' });
     }
 };
+  
+  
+  // GET /users/:id: Retrieve a specific user by their ID
+exports.getUsersById =  async (req, res) => {
+      try {
+        const user = await User.findOne({ userId: req.params.id });
+        if (!user) {
+          return res.status(404).json({ error: 'User not found' });
+        }
+        res.json(user);
+      } catch (err) {
+        res.status(500).json({ error: 'Failed to retrieve user' });
+      }
+};
+    
+    
+  //Retrieve users based on their location
+exports.getUsersByLocation =  async (req, res) => {
+      try {
+        console.log(req.params.location);
+        const users = await User.find({ 'userData.location': req.params.location });
+        if (users.length === 0) {
+          return res.status(404).json({ error: 'NUser not found' });
+        }
+        res.json(users);
+      } catch (err) {
+        res.status(500).json({ error: 'Failed to retrieve users' });
+      }
+};
+  
